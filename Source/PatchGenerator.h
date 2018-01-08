@@ -11,6 +11,7 @@
 #ifndef PATCHGENERATOR_H_INCLUDED
 #define PATCHGENERATOR_H_INCLUDED
 
+#include <random>
 #include "RenderEngine.h"
 
 //==============================================================================

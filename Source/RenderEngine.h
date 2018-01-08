@@ -11,44 +11,41 @@
 #ifndef RENDERENGINE_H_INCLUDED
 #define RENDERENGINE_H_INCLUDED
 
-#include <random>
 #include <array>
-#include <iomanip>
-#include <sstream>
+#include <cstdint>
 #include <string>
-#include "Maximilian/maximilian.h"
-#include "Maximilian/libs/maxiFFT.h"
-#include "Maximilian/libs/maxiMFCC.h"
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <utility>
+#include <vector>
 
+
+namespace juce
+{
+    class AudioPluginInstance;
+    template <typename T>
+    class AudioBuffer;
+    class MidiBuffer;
+    typedef AudioBuffer<float> AudioSampleBuffer;
+}
 using namespace juce;
+
+class maxiFFT;
+template <typename T>
+class maxiMFCCAnalyser;
+typedef maxiMFCCAnalyser<double> maxiMFCC;
+
+
+
 
 typedef std::vector<std::pair<int, float>>  PluginPatch;
 typedef std::vector<std::array<double, 13>> MFCCFeatures;
 
+
 class RenderEngine
 {
 public:
-    RenderEngine (int sr,
-                  int bs,
-                  int ffts) :
-        sampleRate(sr),
-        bufferSize(bs),
-        fftSize(ffts),
-        plugin(nullptr)
-    {
-        maxiSettings::setup (sampleRate, 1, bufferSize);
-    }
+    RenderEngine (int sr, int bs, int ffts);
 
-    virtual ~RenderEngine()
-    {
-        if (plugin != nullptr)
-        {
-            plugin->releaseResources();
-            delete plugin;
-        }
-    }
-
+    virtual ~RenderEngine();
 
     bool loadPlugin (const std::string& path);
 
@@ -56,8 +53,8 @@ public:
 
     const PluginPatch getPatch();
 
-    void renderPatch (const uint8  midiNote,
-                      const uint8  midiVelocity,
+    void renderPatch (const uint8_t  midiNote,
+                      const uint8_t  midiVelocity,
                       const double noteLength,
                       const double renderLength);
 
@@ -70,7 +67,7 @@ public:
 
     const size_t getPluginParameterSize();
 
-    const String getPluginParametersDescription();
+    const std::string getPluginParametersDescription();
 
     bool overridePluginParameter (const int   index,
                                   const float value);
@@ -85,28 +82,28 @@ private:
     void fillAudioFeatures (const AudioSampleBuffer& data,
                             maxiFFT&                 fft);
 
-    void ifTimeSetNoteOff (const double& noteLength,
-                           const double& sampleRate,
-                           const int&    bufferSize,
-                           const uint8&  midiChannel,
-                           const uint8&  midiPitch,
-                           const uint8&  midiVelocity,
-                           const int&    currentBufferIndex,
-                           MidiBuffer&   bufferToNoteOff);
+    void ifTimeSetNoteOff (const double&  noteLength,
+                           const double&  sampleRate,
+                           const int&     bufferSize,
+                           const uint8_t& midiChannel,
+                           const uint8_t& midiPitch,
+                           const uint8_t& midiVelocity,
+                           const int&     currentBufferIndex,
+                           MidiBuffer&    bufferToNoteOff);
 
     void fillAvailablePluginParameters (PluginPatch& params);
 
-    double               sampleRate;
-    int                  bufferSize;
-    int                  fftSize;
-    maxiMFCC             mfcc;
-    AudioPluginInstance* plugin;
-    PluginPatch          pluginParameters;
-    PluginPatch          overridenParameters;
-    MFCCFeatures         mfccFeatures;
-    std::vector<double>  processedMonoAudioPreview;
-    std::vector<double>  rmsFrames;
-    double               currentRmsFrame;
+    double                               sampleRate;
+    int                                  bufferSize;
+    int                                  fftSize;
+    std::unique_ptr<maxiMFCC>            mfcc;
+    std::unique_ptr<AudioPluginInstance> plugin;
+    PluginPatch                          pluginParameters;
+    PluginPatch                          overridenParameters;
+    MFCCFeatures                         mfccFeatures;
+    std::vector<double>                  processedMonoAudioPreview;
+    std::vector<double>                  rmsFrames;
+    double                               currentRmsFrame;
 };
 
 

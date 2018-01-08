@@ -8,8 +8,9 @@
   ==============================================================================
 */
 
-#include "PatchGenerator.h"
 #include <boost/python.hpp>
+#include "RenderEngine.h"
+#include "PatchGenerator.h"
 
 // Could also easily be namespace crap.
 namespace wrap
@@ -150,7 +151,7 @@ namespace wrap
 
         std::string wrapperGetPluginParametersDescription()
         {
-            return RenderEngine::getPluginParametersDescription().toStdString();
+            return RenderEngine::getPluginParametersDescription();
         }
 
         boost::python::list wrapperGetAudioFrames()
@@ -190,7 +191,7 @@ BOOST_PYTHON_MODULE(librenderman)
     using namespace boost::python;
     using namespace wrap;
 
-    class_<RenderEngineWrapper>("RenderEngine", init<int, int, int>())
+    class_<RenderEngineWrapper, boost::noncopyable>("RenderEngine", init<int, int, int>())
     .def("load_plugin", &RenderEngineWrapper::loadPlugin)
     .def("set_patch", &RenderEngineWrapper::wrapperSetPatch)
     .def("get_patch", &RenderEngineWrapper::wrapperGetPatch)

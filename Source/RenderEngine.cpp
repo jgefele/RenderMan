@@ -8,7 +8,29 @@
   ==============================================================================
 */
 
+#include <iomanip>
 #include "RenderEngine.h"
+#include "Maximilian/maximilian.h"
+#include "Maximilian/libs/maxiFFT.h"
+#include "Maximilian/libs/maxiMFCC.h"
+#include "../JuceLibraryCode/JuceHeader.h"
+
+//==============================================================================
+RenderEngine::RenderEngine (int sr, int bs, int ffts) :
+    sampleRate(sr),
+    bufferSize(bs),
+    fftSize(ffts)
+{
+    maxiSettings::setup (sampleRate, 1, bufferSize);
+    mfcc.reset(new maxiMFCC());
+}
+
+//==============================================================================
+RenderEngine::~RenderEngine()
+{
+    if (plugin != nullptr)
+        plugin->releaseResources();
+}
 
 //==============================================================================
 bool RenderEngine::loadPlugin (const std::string& path)
@@ -33,12 +55,10 @@ bool RenderEngine::loadPlugin (const std::string& path)
 
     String errorMessage;
 
-    if (plugin != nullptr) delete plugin;
-
-    plugin = pluginFormatManager.createPluginInstance (*pluginDescriptions[0],
+    plugin.reset(pluginFormatManager.createPluginInstance (*pluginDescriptions[0],
                                                        sampleRate,
                                                        bufferSize,
-                                                       errorMessage);
+                                                       errorMessage));
     if (plugin != nullptr)
     {
         // Success so set up plugin, then set up features and get all available
@@ -46,7 +66,7 @@ bool RenderEngine::loadPlugin (const std::string& path)
         plugin->prepareToPlay (sampleRate, bufferSize);
         plugin->setNonRealtime (true);
 
-        mfcc.setup (512, 42, 13, 20, int (sampleRate / 2), sampleRate);
+        mfcc->setup (512, 42, 13, 20, int (sampleRate / 2), sampleRate);
 
         // Resize the pluginParameters patch type to fit this plugin and init
         // all the values to 0.0f!
@@ -63,8 +83,8 @@ bool RenderEngine::loadPlugin (const std::string& path)
 }
 
 //==============================================================================
-void RenderEngine::renderPatch (const uint8  midiNote,
-                                const uint8  midiVelocity,
+void RenderEngine::renderPatch (const uint8_t  midiNote,
+                                const uint8_t  midiVelocity,
                                 const double noteLength,
                                 const double renderLength)
 {
@@ -156,7 +176,7 @@ void RenderEngine::fillAudioFeatures (const AudioSampleBuffer& data,
             // This isn't real-time so I can take the luxuary of allocating
             // heap memory here.
             double* mfccs = new double[13];
-            mfcc.mfcc (fft.magnitudes, mfccs);
+            mfcc->mfcc (fft.magnitudes, mfccs);
 
             std::array<double, 13> mfccsFrame;
             std::memcpy (mfccsFrame.data(), mfccs, sizeof (double) * 13);
@@ -175,14 +195,14 @@ void RenderEngine::fillAudioFeatures (const AudioSampleBuffer& data,
 }
 
 //=============================================================================
-void RenderEngine::ifTimeSetNoteOff (const double& noteLength,
-                                     const double& sampleRate,
-                                     const int&    bufferSize,
-                                     const uint8&  midiChannel,
-                                     const uint8&  midiPitch,
-                                     const uint8&  midiVelocity,
-                                     const int&    currentBufferIndex,
-                                     MidiBuffer&   bufferToNoteOff)
+void RenderEngine::ifTimeSetNoteOff (const double&  noteLength,
+                                     const double&  sampleRate,
+                                     const int&     bufferSize,
+                                     const uint8_t& midiChannel,
+                                     const uint8_t& midiPitch,
+                                     const uint8_t& midiVelocity,
+                                     const int&     currentBufferIndex,
+                                     MidiBuffer&    bufferToNoteOff)
 {
     double eventFrame = noteLength * sampleRate;
     bool bufferBeginIsBeforeEvent = currentBufferIndex * bufferSize < eventFrame;
@@ -318,7 +338,7 @@ void RenderEngine::fillAvailablePluginParameters (PluginPatch& params)
 }
 
 //==============================================================================
-const String RenderEngine::getPluginParametersDescription()
+const std::string RenderEngine::getPluginParametersDescription()
 {
     String parameterListString ("");
 
@@ -333,8 +353,7 @@ const String RenderEngine::getPluginParametersDescription()
             const String name = plugin->getParameterName (pair.first);
             const String index (ss.str());
 
-            parameterListString = parameterListString +
-                                  index + ": " + name +
+            parameterListString += index + ": " + name +
                                   "\n";
             ss.str ("");
             ss.clear();
@@ -345,7 +364,7 @@ const String RenderEngine::getPluginParametersDescription()
         std::cout << "Please load the plugin first!" << std::endl;
     }
 
-    return parameterListString;
+    return parameterListString.toStdString();
 }
 
 //==============================================================================
