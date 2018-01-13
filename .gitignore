@@ -1,0 +1,9 @@
+Builds/MacOSX/build/
+Builds/MacOSX/RenderMan.xcodeproj/project.xcworkspace/
+Builds/MacOSX/RenderMan.xcodeproj/xcuserdata/
+__pycache__/
+.ipynb_checkpoints/
+.cache/
+*.so
+*.dylib
+Documentation/plugins/
