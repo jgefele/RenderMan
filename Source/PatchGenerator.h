@@ -19,8 +19,8 @@ class PatchGenerator
 {
 
 public:
-    PatchGenerator (RenderEngine& engine) :
-        generator (std::random_device()())
+    PatchGenerator (RenderEngine& engine, uint64_t seed=0) :
+        generator (seed != 0 ? seed : std::random_device()())
     {
         skeletonPatch = engine.getPatch();
         for (auto& parameter : skeletonPatch)
