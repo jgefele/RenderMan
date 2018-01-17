@@ -4,6 +4,7 @@ Builds/MacOSX/RenderMan.xcodeproj/xcuserdata/
 __pycache__/
 .ipynb_checkpoints/
 .cache/
+*.pyc
 *.so
 *.dylib
 Documentation/plugins/
