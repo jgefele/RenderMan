@@ -36,14 +36,16 @@ install:
 cache: pip
 
 script:
-  - ulimit -a
   - ulimit -c unlimited
+  - ulimit -a
+  - cat /proc/sys/kernel/core_pattern
   - ./build.sh
   - ./test.sh
 
 after_failure:
   # analyse core dumps
-  - ls /var/crash
-  - cat /var/log/apport.log
+  - ls -lR /var/crash .
   - COREFILE=$(find Documentation -maxdepth 1 -name "core*" | head -n 1) # find core file
+  - if [[ -f "$COREFILE" ]]; then gdb -c "$COREFILE" example -ex "thread apply all bt" -ex "set pagination 0" -batch; fi
+  - COREFILE=$(ls /var/crash/*crash | head -n 1) # find core file
   - if [[ -f "$COREFILE" ]]; then gdb -c "$COREFILE" example -ex "thread apply all bt" -ex "set pagination 0" -batch; fi
