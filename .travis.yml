@@ -4,6 +4,8 @@ os:
   - linux
 #  - osx
 
+sudo: true
+
 # Linux dependencies
 addons:
   apt:
@@ -34,6 +36,8 @@ install:
 cache: pip
 
 script:
+  - ulimit -a
+  - ulimit -c unlimited
   - ./build.sh
   - ./test.sh
 
