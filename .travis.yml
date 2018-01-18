@@ -30,7 +30,9 @@ install:
   - pip install --user --requirement requirements.txt
   - ls -lR ~/.cache
 
-cache: pip
+cache:
+  directories:
+    - $HOME/.cache/pip
 
 script:
   - ./build.sh
