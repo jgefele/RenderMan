@@ -29,4 +29,6 @@ install:
 cache: pip
 
 
-script: ./build_and_test.sh
+script:
+  - ./build.sh
+  - ./test.sh
