@@ -34,16 +34,15 @@ install:
 cache: pip
 
 before_script:
-  # write core dumps
-  - ulimit -a
-  - ulimit -c unlimited
-  - ulimit -a
-  - cat /proc/sys/kernel/core_pattern
-  - ls -l /proc/sys/kernel/core_pattern
+  - sysctl kernel.core_pattern
+  - sleep 10 & killall -SIGSEGV sleep
+  - ls . /var/crash
+  - cat /var/log/apport.log
 
 script:
-  - ./build.sh
-  - ./test.sh
+  - echo hello world
+  #- ./build.sh
+  #- ./test.sh
 
 after_failure:
   # analyse core dumps
