@@ -7,9 +7,3 @@ if [[ "$(uname)" == "Darwin" ]]; then
 else
     make --directory=Builds/LinuxMakefile/ || exit $?
 fi
-
-###### TEST ######
-if [[ "$TRAVIS" == "" ]]; then
-    INTERACTIVE_NB_DIFF=--nbdime;
-fi
-py.test Documentation --nbval $INTERACTIVE_NB_DIFF || exit $?
