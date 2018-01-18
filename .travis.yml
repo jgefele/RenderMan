@@ -20,14 +20,15 @@ addons:
       - libxcomposite-dev
       - libcurl4-gnutls-dev
 
-# OSX dependencies  and  Python dependencies (for test)
 install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then HOMEBREW_NO_AUTO_UPDATE=1 brew install boost-python; fi
+  # OSX dependencies
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then HOMEBREW_NO_AUTO_UPDATE=1 brew install boost-python; alias pip=pip2; fi
+
+  # Linux and OSX dependencies
   - pip install --user --upgrade pip
   - pip install --user --requirement requirements.txt
 
 cache: pip
-
 
 script:
   - ./build.sh
