@@ -8,7 +8,11 @@
   ==============================================================================
 */
 
+#include <cmath>
+#include <cstring>
 #include <iomanip>
+#include <iostream>
+#include <sstream>
 #include "RenderEngine.h"
 #include "Maximilian/maximilian.h"
 #include "Maximilian/libs/maxiFFT.h"
