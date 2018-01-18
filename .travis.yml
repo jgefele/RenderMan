@@ -28,7 +28,9 @@ install:
   - pip install --user --upgrade pip
   - pip install --user --requirement requirements.txt
 
-cache: pip
+cache:
+  directories:
+    - $HOME/.cache/pip
 
 script:
   - ./build.sh
