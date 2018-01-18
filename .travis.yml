@@ -1,38 +1,39 @@
 language: cpp
 compiler: clang
-os:
-  - linux
-  - osx
 
-# Linux dependencies
-addons:
-  apt:
-    packages:
-      - libboost-python-dev
-      - libfreetype6-dev
-      - libx11-dev
-      - libxinerama-dev
-      - libxrandr-dev
-      - libxcursor-dev
-      - mesa-common-dev
-      - libasound2-dev
-      - freeglut3-dev
-      - libxcomposite-dev
-      - libcurl4-gnutls-dev
+matrix:
+  include:
+    - os: linux
+      addons:
+        # build dependencies
+        apt:
+          packages:
+            - libboost-python-dev
+            - libfreetype6-dev
+            - libx11-dev
+            - libxinerama-dev
+            - libxrandr-dev
+            - libxcursor-dev
+            - mesa-common-dev
+            - libasound2-dev
+            - freeglut3-dev
+            - libxcomposite-dev
+            - libcurl4-gnutls-dev
+      install:
+        # test dependencies
+        - pip install --user --requirement requirements.txt
 
-install:
-  # OSX dependencies
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then HOMEBREW_NO_AUTO_UPDATE=1 brew install boost-python; alias pip=pip2; fi
-
-  # Linux and OSX dependencies
-  - pip install --user --upgrade pip
-  - pip install --user --requirement requirements.txt
-
-
-# improve build speed a bit
-git: depth: 3
-cache: directories: $HOME/.cache/pip
+    - os: osx
+      install:
+        # build dependencies
+        - HOMEBREW_NO_AUTO_UPDATE=1 brew install boost-python
+        # test dependencies
+        - pip2 install --user --requirement requirements.txt
 
 script:
   - ./build.sh
   - ./test.sh
+
+# improve build speed a bit
+git: depth: 3
+cache: directories: $HOME/.cache/pip
