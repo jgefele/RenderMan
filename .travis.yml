@@ -2,12 +2,13 @@ language: cpp
 compiler: clang
 os:
   - linux
-  - osx
+#  - osx
 
 # Linux dependencies
 addons:
   apt:
     packages:
+      # build dependencies
       - libboost-python-dev
       - libfreetype6-dev
       - libx11-dev
@@ -19,14 +20,21 @@ addons:
       - freeglut3-dev
       - libxcomposite-dev
       - libcurl4-gnutls-dev
+      # for analysing core dumps in 'after_failure'
+      - gdb
 
 install:
-  # OSX dependencies
+  # OSX build dependencies
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then HOMEBREW_NO_AUTO_UPDATE=1 brew install boost-python; alias pip=pip2; fi
 
-  # Linux and OSX dependencies
+  # Linux and OSX dependencies (just for integration tests)
   - pip install --user --upgrade pip
   - pip install --user --requirement requirements.txt
+
+after_failure:
+  # analyse core dumps
+  - COREFILE=$(find . -maxdepth 1 -name "core*" | head -n 1) # find core file
+  - if [[ -f "$COREFILE" ]]; then gdb -c "$COREFILE" example -ex "thread apply all bt" -ex "set pagination 0" -batch; fi
 
 cache: pip
 
