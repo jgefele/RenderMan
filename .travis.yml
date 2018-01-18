@@ -25,10 +25,10 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then HOMEBREW_NO_AUTO_UPDATE=1 brew install boost-python; alias pip=pip2; fi
 
   # Linux and OSX dependencies
-  - ls -lR .cache
+  - ls -lR ~/.cache
   - pip install --user --upgrade pip
   - pip install --user --requirement requirements.txt
-  - ls -lR .cache
+  - ls -lR ~/.cache
 
 cache: pip
 
