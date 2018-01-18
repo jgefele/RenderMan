@@ -28,9 +28,10 @@ install:
   - pip install --user --upgrade pip
   - pip install --user --requirement requirements.txt
 
-cache:
-  directories:
-    - $HOME/.cache/pip
+
+# improve build speed a bit
+git: depth: 3
+cache: directories: $HOME/.cache/pip
 
 script:
   - ./build.sh
