@@ -30,14 +30,14 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" vst3Folder="VST3_SDK" extraLinkerFlags="-shared -lpython2.7 -lboost_python"
-               extraCompilerFlags="-fPIC" postbuildCommand="cp $TARGET_BUILD_DIR/librenderman.dylib   $PROJECT_DIR/../../Documentation/librenderman.so">
+               extraCompilerFlags="-fPIC" postbuildCommand="mv $TARGET_BUILD_DIR/librenderman.dylib $TARGET_BUILD_DIR/librenderman.so">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="librenderman"
                        osxCompatibility="10.9 SDK" osxArchitecture="Native" headerPath="/usr/include/python2.7&#10;/usr/local/include&#10;"
-                       libraryPath="/usr/local/lib" enablePluginBinaryCopyStep="1"/>
+                       libraryPath="/usr/local/lib" enablePluginBinaryCopyStep="1" binaryPath="Documentation"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="librenderman"
                        osxCompatibility="10.9 SDK" osxArchitecture="Native" headerPath="/usr/include/python2.7&#10;/usr/local/include&#10;"
-                       libraryPath="/usr/local/lib" enablePluginBinaryCopyStep="1"/>
+                       libraryPath="/usr/local/lib" enablePluginBinaryCopyStep="1" binaryPath="Documentation"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="JuceLibraryCode/modules"/>
@@ -111,9 +111,9 @@
                 extraLinkerFlags="-shared -lpython2.7 -lboost_python" cppLanguageStandard="-std=c++11">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="renderman"
-                       headerPath="/usr/include/python2.7"/>
+                       headerPath="/usr/include/python2.7" binaryPath="Documentation"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="renderman"
-                       headerPath="/usr/include/python2.7"/>
+                       headerPath="/usr/include/python2.7" binaryPath="Documentation"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="JuceLibraryCode/modules"/>

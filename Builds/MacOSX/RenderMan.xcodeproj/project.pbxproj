@@ -185,7 +185,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
-				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
+				CONFIGURATION_BUILD_DIR = ../../Documentation;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -217,7 +217,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
-				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
+				CONFIGURATION_BUILD_DIR = ../../Documentation;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
@@ -364,7 +364,7 @@
 					29782FB7B1C181EA8900F409,
 					8CB86F722980F4262C64B7D7,
 					31D395DB17463EFA64FFF6EE, ); runOnlyForDeploymentPostprocessing = 0; };
-		070ACC1A4CADB59B3D5E8DFA = {isa = PBXShellScriptBuildPhase; buildActionMask = 2147483647; files = (  ); runOnlyForDeploymentPostprocessing = 0; name = "Post-build script"; shellPath = /bin/sh; shellScript = "cp $TARGET_BUILD_DIR/librenderman.dylib   $PROJECT_DIR/../../Documentation/librenderman.so"; };
+		070ACC1A4CADB59B3D5E8DFA = {isa = PBXShellScriptBuildPhase; buildActionMask = 2147483647; files = (  ); runOnlyForDeploymentPostprocessing = 0; name = "Post-build script"; shellPath = /bin/sh; shellScript = "mv $TARGET_BUILD_DIR/librenderman.dylib $TARGET_BUILD_DIR/librenderman.so"; };
 		E98E387BEE39DA3BB2453E26 = {isa = PBXNativeTarget; buildConfigurationList = 8554B8E109F0041E134ABD43; buildPhases = (
 					F9532586338EB324FB3D0477,
 					D55D5E0344C2869867B93269,
