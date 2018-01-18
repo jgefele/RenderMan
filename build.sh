@@ -1,6 +1,4 @@
 #! /bin/bash
-exit 1
-
 cd "$(dirname "$0")"
 
 ###### BUILD ######
