@@ -35,5 +35,7 @@ script:
   - ./test.sh
 
 # improve build speed a bit
-git: depth: 3
-cache: directories: $HOME/.cache/pip
+git:
+  depth: 3
+cache:
+  directories: $HOME/.cache/pip
