@@ -36,6 +36,7 @@ cache: pip
 before_script:
   # write core dumps
   - ulimit -c unlimited -S
+  - ulimit -a
 
 script:
   - ./build.sh
@@ -43,6 +44,6 @@ script:
 
 after_failure:
   # analyse core dumps
-  - ls -lR . ~
+  - ls -lR ~
   - COREFILE=$(find Documentation -maxdepth 1 -name "core*" | head -n 1) # find core file
   - if [[ -f "$COREFILE" ]]; then gdb -c "$COREFILE" example -ex "thread apply all bt" -ex "set pagination 0" -batch; fi
