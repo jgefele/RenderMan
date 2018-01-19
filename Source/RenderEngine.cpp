@@ -39,7 +39,6 @@ RenderEngine::~RenderEngine()
 //==============================================================================
 bool RenderEngine::loadPlugin (const std::string& path)
 {
-    std::cout << path << std::endl;
     OwnedArray<PluginDescription> pluginDescriptions;
     KnownPluginList pluginList;
     AudioPluginFormatManager pluginFormatManager;
@@ -54,9 +53,13 @@ bool RenderEngine::loadPlugin (const std::string& path)
                                    *pluginFormatManager.getFormat(i));
     }
 
-    // If there is a problem here first check the preprocessor definitions
-    // in the projucer are sensible - is it set up to scan for plugin's?
-    jassert (pluginDescriptions.size() > 0);
+    if (pluginDescriptions.size() == 0)
+    {
+        std::cout << "RenderEngine::loadPlugin error: no plugins found"i
+        << std::endl;
+	
+	return false;
+    }
 
     String errorMessage;
 
