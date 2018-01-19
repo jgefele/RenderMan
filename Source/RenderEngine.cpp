@@ -55,7 +55,7 @@ bool RenderEngine::loadPlugin (const std::string& path)
 
     if (pluginDescriptions.size() == 0)
     {
-        std::cout << "RenderEngine::loadPlugin error: no plugins found"i
+        std::cout << "RenderEngine::loadPlugin error: no plugins found"
         << std::endl;
 	
 	return false;
