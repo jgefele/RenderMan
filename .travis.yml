@@ -4,8 +4,6 @@ os:
   - linux
 #  - osx
 
-sudo: true
-
 # Linux dependencies
 addons:
   apt:
@@ -24,6 +22,7 @@ addons:
       - libcurl4-gnutls-dev
       # for analysing core dumps in 'after_failure'
       - gdb
+      - apport
 
 install:
   # OSX build dependencies
@@ -36,13 +35,11 @@ install:
 cache: pip
 
 script:
-  - ulimit -c unlimited  # enable core dumps
+  - ulimit -c unlimited -S # enable core dumps
   - ./build.sh
   - ./test.sh
 
 after_failure:
   # analyse core dumps
-  - COREFILE=$(ls /var/crash/*crash | head -n 1) # find core file
-  - if [[ -f "$COREFILE" ]]; then sudo gdb -c "$COREFILE" python -ex "thread apply all bt" -ex "set pagination 0" -batch; fi
-  - if [[ -f "$COREFILE" ]]; then sudo cat "$COREFILE"; fi
-  - sudo cat /var/log/apport.log
+  - COREFILE=$(ls Documentation/core* | head -n 1) # find core file
+  - if [[ -f "$COREFILE" ]]; then gdb -c "$COREFILE" python -ex "thread apply all bt" -ex "set pagination 0" -batch; fi
