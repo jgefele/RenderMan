@@ -43,3 +43,5 @@ after_failure:
   # analyse core dumps
   - COREFILE=$(ls Documentation/core* | head -n 1) # find core file
   - if [[ -f "$COREFILE" ]]; then gdb -c "$COREFILE" python -ex "thread apply all bt" -ex "set pagination 0" -batch; fi
+  - ls -l /var/crash
+  - cat /var/crash/*
