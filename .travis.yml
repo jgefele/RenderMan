@@ -44,3 +44,5 @@ after_failure:
   # analyse core dumps
   - COREFILE=$(ls /var/crash/*crash | head -n 1) # find core file
   - if [[ -f "$COREFILE" ]]; then sudo gdb -c "$COREFILE" python -ex "thread apply all bt" -ex "set pagination 0" -batch; fi
+  - if [[ -f "$COREFILE" ]]; then sudo cat "$COREFILE"; fi
+  - sudo cat /var/log/apport.log
