@@ -39,6 +39,7 @@ RenderEngine::~RenderEngine()
 //==============================================================================
 bool RenderEngine::loadPlugin (const std::string& path)
 {
+    std::cout << path << std::endl;
     OwnedArray<PluginDescription> pluginDescriptions;
     KnownPluginList pluginList;
     AudioPluginFormatManager pluginFormatManager;
