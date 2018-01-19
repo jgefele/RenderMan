@@ -44,5 +44,6 @@ script:
 after_failure:
   # analyse core dumps
   - ls -lR
-  - COREFILE=$(find . -maxdepth 2 -name "core*" | head -n 1) # find core file
+  - cd Documentation
+  - COREFILE=$(find . -maxdepth 1 -name "core*" | head -n 1) # find core file
   - if [[ -f "$COREFILE" ]]; then sudo gdb -c "$COREFILE" python -ex "thread apply all bt" -ex "set pagination 0" -batch; fi
