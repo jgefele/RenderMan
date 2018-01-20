@@ -2,13 +2,20 @@ language: cpp
 compiler: clang
 os:
   - linux
-#  - osx
+  - osx
 
 sudo: true
 
 # Linux dependencies
 addons:
   apt:
+    sources: 
+      # The Dexed VST (integration tests) requires a more recent version of libstdc++6.
+      # The version from Xenial works, but from 'ppa:ubuntu-toolchain-r/test' not.
+      # (symbol _ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE13_S_copy_charsEPcPKcS7_,
+      #  version GLIBCXX_3.4.21 is missing. Interestingly the version from PPA exports a strict
+      #  subset of symbols alhtough it's a never version.)
+      - sourceline: "deb http://archive.ubuntu.com/ubuntu xenial main"
     packages:
       # build dependencies
       - libboost-python-dev
@@ -22,8 +29,8 @@ addons:
       - freeglut3-dev
       - libxcomposite-dev
       - libcurl4-gnutls-dev
-      # for analysing core dumps in 'after_failure'
-      - gdb
+      # (test-)runtime dependencies for Dexed VST (trusty's version is too old)
+      - libstdc++6
 
 install:
   # OSX build dependencies
@@ -36,13 +43,5 @@ install:
 cache: pip
 
 script:
-  - ulimit -c unlimited  # enable core dumps
-  - sudo sysctl -w kernel.core_pattern=core
   - ./build.sh
   - ./test.sh
-
-after_failure:
-  # analyse core dumps
-  - cd Documentation
-  - COREFILE=$(find . -maxdepth 1 -name "core*" | head -n 1) # find core file
-  - if [[ -f "$COREFILE" ]]; then sudo gdb -c "$COREFILE" python -ex "thread apply all bt" -ex "set pagination 0" -batch; fi
