@@ -7,7 +7,15 @@ os:
 # Linux dependencies
 addons:
   apt:
+    sources: 
+      # The Dexed VST (integration tests) requires a more recent version of libstdc++6.
+      # The version from Xenial works, but from 'ppa:ubuntu-toolchain-r/test' not.
+      # (symbol _ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE13_S_copy_charsEPcPKcS7_,
+      #  version GLIBCXX_3.4.21 is missing. Interestingly the version from PPA exports a strict
+      #  subset of symbols alhtough it's a never version.)
+      - sourceline: "deb http://archive.ubuntu.com/ubuntu xenial main"
     packages:
+      # build dependencies
       - libboost-python-dev
       - libfreetype6-dev
       - libx11-dev
@@ -19,12 +27,14 @@ addons:
       - freeglut3-dev
       - libxcomposite-dev
       - libcurl4-gnutls-dev
+      # (test-)runtime dependencies for Dexed VST (trusty's version is too old)
+      - libstdc++6
 
 install:
-  # OSX dependencies
+  # OSX build dependencies
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then HOMEBREW_NO_AUTO_UPDATE=1 brew install boost-python; alias pip=pip2; fi
 
-  # Linux and OSX dependencies
+  # Linux and OSX dependencies (just for integration tests)
   - pip install --user --upgrade pip
   - pip install --user --requirement requirements.txt
 
