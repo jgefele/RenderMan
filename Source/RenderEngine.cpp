@@ -10,9 +10,7 @@
 
 #include <cmath>
 #include <cstring>
-#include <iomanip>
 #include <iostream>
-#include <sstream>
 #include "RenderEngine.h"
 #include "Maximilian/maximilian.h"
 #include "Maximilian/libs/maxiFFT.h"
@@ -346,25 +344,17 @@ void RenderEngine::fillAvailablePluginParameters (PluginPatch& params)
 }
 
 //==============================================================================
-const std::string RenderEngine::getPluginParametersDescription()
+const ParameterDescription RenderEngine::getPluginParameters()
 {
-    String parameterListString ("");
+    ParameterDescription parameterList;
 
     if (plugin != nullptr)
     {
-        std::ostringstream ss;
-
         for (const auto& pair : pluginParameters)
         {
-            ss << std::setw (3) << std::setfill (' ') << pair.first;
-
-            const String name = plugin->getParameterName (pair.first);
-            const String index (ss.str());
-
-            parameterListString += index + ": " + name +
-                                  "\n";
-            ss.str ("");
-            ss.clear();
+            int idx = pair.first;
+            std::string name = plugin->getParameterName (idx).toStdString();
+            parameterList.push_back(std::make_pair(idx, name));
         }
     }
     else
@@ -372,7 +362,7 @@ const std::string RenderEngine::getPluginParametersDescription()
         std::cout << "Please load the plugin first!" << std::endl;
     }
 
-    return parameterListString.toStdString();
+    return parameterList;
 }
 
 //==============================================================================
@@ -416,12 +406,6 @@ const PluginPatch RenderEngine::getPatch()
         }
     }
     return overridenPluginParameters;
-}
-
-//==============================================================================
-const size_t RenderEngine::getPluginParameterSize()
-{
-    return pluginParameters.size();
 }
 
 //==============================================================================

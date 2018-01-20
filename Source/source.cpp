@@ -16,59 +16,28 @@
 namespace wrap
 {
     //==========================================================================
-    // Converts a C++ vector to a Python list. All following functions
-    // are essentially cheap ripoffs from this one.
-    // https://gist.github.com/octavifs/5362272
-    template <class T>
-    boost::python::list vectorToList (std::vector<T> vector)
+    // Converts a std::vector or std::array to a Python list.
+    template <typename ForwardIterable>
+    boost::python::list containerToPythonList (ForwardIterable container)
     {
-    	typename std::vector<T>::iterator iter;
     	boost::python::list list;
-    	for (iter = vector.begin(); iter != vector.end(); ++iter)
-        {
-    		list.append(*iter);
-    	}
+    	for (const auto& element : container)
+            list.append(element);
     	return list;
     }
 
-    //==========================================================================
-    // Yeah this is lazy. I know.
-    template <class T>
-    boost::python::list arrayToList (std::array<T, 13> array)
+    template <typename T1, typename T2>
+    boost::python::tuple pairToTuple (std::pair<T1, T2> pair)
     {
-    	typename std::array<T, 13>::iterator iter;
-    	boost::python::list list;
-    	for (iter = array.begin(); iter != array.end(); ++iter)
-        {
-    		list.append(*iter);
-    	}
-    	return list;
+        return boost::python::make_tuple (pair.first, pair.second);
     }
 
-    //==========================================================================
-    // Converts a std::pair which is used as a parameter in C++
-    // into a tuple with the respective types int and float for
-    // use in Python.
-    boost::python::tuple parameterToTuple (std::pair<int, float> parameter)
+    template <typename T1, typename T2>
+    boost::python::list vectorOfPairsToListOfTuples(std::vector <std::pair <T1,T2>> vector)
     {
-        boost::python::tuple parameterTuple;
-        parameterTuple = boost::python::make_tuple (parameter.first,
-                                                    parameter.second);
-        return parameterTuple;
-    }
-
-    //==========================================================================
-    // Converts a PluginPatch ( std::vector <std::pair <int, float>> )
-    // to a Python list.
-    boost::python::list pluginPatchToListOfTuples (PluginPatch parameters)
-    {
-    	std::vector<std::pair<int, float>>::iterator iter;
     	boost::python::list list;
-    	for (iter = parameters.begin(); iter != parameters.end(); ++iter)
-        {
-            auto tup = parameterToTuple (*iter);
-    		list.append(tup);
-    	}
+        for (const auto& pair : vector)
+    		list.append(pairToTuple(pair));
     	return list;
     }
 
@@ -77,12 +46,8 @@ namespace wrap
     boost::python::list mfccFramesToListOfLists (MFCCFeatures frames)
     {
         boost::python::list list;
-        std::vector <std::array <double, 13>>::iterator iter;
-        for (iter = frames.begin(); iter != frames.end(); ++iter)
-        {
-            auto l = arrayToList (*iter);
-    		list.append(l);
-    	}
+        for (const auto& frame : frames)
+    		list.append(containerToPythonList(frame));
     	return list;
     }
 
@@ -121,7 +86,7 @@ namespace wrap
 
         boost::python::list wrapperGetPatch()
         {
-            return pluginPatchToListOfTuples (RenderEngine::getPatch());
+            return vectorOfPairsToListOfTuples(RenderEngine::getPatch());
         }
 
         void wrapperRenderPatch (int    midiNote,
@@ -144,24 +109,19 @@ namespace wrap
             return mfccFramesToListOfLists (RenderEngine::getMFCCFrames());
         }
 
-        int wrapperGetPluginParameterSize()
+        boost::python::list wrapperGetPluginParameters()
         {
-            return int (RenderEngine::getPluginParameterSize());
-        }
-
-        std::string wrapperGetPluginParametersDescription()
-        {
-            return RenderEngine::getPluginParametersDescription();
+            return vectorOfPairsToListOfTuples(RenderEngine::getPluginParameters());
         }
 
         boost::python::list wrapperGetAudioFrames()
         {
-            return vectorToList (RenderEngine::getAudioFrames());
+            return containerToPythonList (RenderEngine::getAudioFrames());
         }
 
         boost::python::list wrapperGetRMSFrames()
         {
-            return vectorToList (RenderEngine::getRMSFrames());
+            return containerToPythonList (RenderEngine::getRMSFrames());
         }
     };
 
@@ -175,12 +135,12 @@ namespace wrap
 
         boost::python::tuple wrapperGetRandomParameter (int index)
         {
-            return parameterToTuple (PatchGenerator::getRandomParameter (index));
+            return pairToTuple (PatchGenerator::getRandomParameter (index));
         }
 
         boost::python::list wrapperGetRandomPatch()
         {
-            return pluginPatchToListOfTuples (PatchGenerator::getRandomPatch());
+            return vectorOfPairsToListOfTuples(PatchGenerator::getRandomPatch());
         }
     };
 }
@@ -197,8 +157,7 @@ BOOST_PYTHON_MODULE(librenderman)
     .def("get_patch", &RenderEngineWrapper::wrapperGetPatch)
     .def("render_patch", &RenderEngineWrapper::wrapperRenderPatch)
     .def("get_mfcc_frames", &RenderEngineWrapper::wrapperGetMFCCFrames)
-    .def("get_plugin_parameter_size", &RenderEngineWrapper::wrapperGetPluginParameterSize)
-    .def("get_plugin_parameters_description", &RenderEngineWrapper::wrapperGetPluginParametersDescription)
+    .def("get_plugin_parameters_description", &RenderEngineWrapper::wrapperGetPluginParameters)
     .def("override_plugin_parameter", &RenderEngineWrapper::overridePluginParameter)
     .def("remove_overriden_plugin_parameter", &RenderEngineWrapper::removeOverridenParameter)
     .def("get_audio_frames", &RenderEngineWrapper::wrapperGetAudioFrames)

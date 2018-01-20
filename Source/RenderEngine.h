@@ -38,6 +38,7 @@ typedef maxiMFCCAnalyser<double> maxiMFCC;
 
 
 typedef std::vector<std::pair<int, float>>  PluginPatch;
+typedef std::vector<std::pair<int, std::string>>  ParameterDescription;
 typedef std::vector<std::array<double, 13>> MFCCFeatures;
 
 
@@ -66,9 +67,7 @@ public:
 
     const std::vector<double> getRMSFrames();
 
-    const size_t getPluginParameterSize();
-
-    const std::string getPluginParametersDescription();
+    const ParameterDescription getPluginParameters();
 
     bool overridePluginParameter (const int   index,
                                   const float value);
