@@ -4,8 +4,6 @@ os:
   - linux
   - osx
 
-sudo: true
-
 # Linux dependencies
 addons:
   apt:
