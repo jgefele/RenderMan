@@ -32,11 +32,11 @@ addons:
 
 install:
   # OSX build dependencies
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then HOMEBREW_NO_AUTO_UPDATE=1 brew install boost-python; alias pip=pip2; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then HOMEBREW_NO_AUTO_UPDATE=1 brew install boost-python; fi
 
   # Linux and OSX dependencies (just for integration tests)
-  - pip install --user --upgrade pip
-  - pip install --user --requirement requirements.txt
+  - pip2 install --user --upgrade pip
+  - pip2 install --user --requirement requirements.txt
 
 cache:
   directories:
