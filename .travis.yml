@@ -35,6 +35,7 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then HOMEBREW_NO_AUTO_UPDATE=1 brew install boost-python; fi
 
   # Linux and OSX dependencies (just for integration tests)
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export PATH=$HOME/Library/Python/2.7/bin:$PATH; fi
   - pip2 install --user --upgrade pip
   - pip2 install --user --requirement requirements.txt
 
