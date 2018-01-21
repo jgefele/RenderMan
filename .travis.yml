@@ -44,5 +44,6 @@ cache:
     - $HOME/.cache/pip
 
 script:
+  - ./fix_python_make_flags.py
   - ./build.sh
   - ./test.sh
